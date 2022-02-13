@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Installing Serverless...
+  pre_build:
+    commands:
+      - poetry install
+      - npm install
+      - npm install serverless
+      - npx serverless plugin install -n serverless-python-requirements
+      - npx serverless plugin install -n serverless-iam-roles-per-function
+      - npx serverless plugin install -n serverless-api-gateway-caching
+  build:
+    commands:
+      - npx serverless deploy
+  post_build:
+    commands:
+      - echo Deployment successful

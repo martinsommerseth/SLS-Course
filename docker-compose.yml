@@ -1,0 +1,10 @@
+# All port numbers referenced here can be found in the .env file
+version: '3.4'
+
+services:
+  serverless-deploy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deploy
+    container_name: solver-service-deploy

@@ -1,0 +1,45 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: serverless
+
+package:  
+  include:
+    - "./src/**"
+
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux
+
+provider:
+  name: aws
+  region: eu-west-1
+  runtime: python3.7
+  stage: api
+  apiKeys:
+    - testKey
+  versionFunctions: false
+
+
+functions:
+  binPacking:
+    handler: src/bin_packing.solver
+    events:
+      - http:
+          path: /bin_packing
+          method: post
+          private: true
+
+
+plugins:
+  - serverless-python-requirements
