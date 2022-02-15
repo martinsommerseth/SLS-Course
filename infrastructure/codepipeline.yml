@@ -24,18 +24,6 @@ Resources:
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
 
-  backendPipelinePolicy:
-    Type: AWS::IAM::ManagedPolicy
-    Properties:
-      ManagedPolicyName: "backend-pipeline-policy"
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Action:
-              - '*'
-            Effect: Allow
-            Resource: "*"
-
   backendPipelineRole:
     Type: AWS::IAM::Role
     Properties:
@@ -49,9 +37,61 @@ Resources:
                 - codepipeline.amazonaws.com
         Version: '2012-10-17'
       Path: /
-      ManagedPolicyArns:
-        - !Ref backendPipelinePolicy
+      Policies:
+        - PolicyName: "backendPipelinePolicy"
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Action:
+              - '*'
+              Effect: Allow
+              Resource: '*'
+
+#  deploySlsCodeBuildRole:
+#    Type: AWS::IAM::Role
+#    Properties:
+#      AssumeRolePolicyDocument:
+#        Statement:
+#        - Action: ['sts:AssumeRole']
+#          Effect: Allow
+#          Principal:
+#            Service:
+#            - codebuild.amazonaws.com
+#        Version: '2012-10-17'
+#      Path: /
+#      Policies:
+#      - PolicyName: "codeBuildAccess"
+#        PolicyDocument:
+#          Version: '2012-10-17'
+#          Statement:
+#          - Action:
+#            - '*'
+#            Effect: Allow
+#            Resource: '*'
 #
+#  deploySlsCodeBuild:
+#    Type: AWS::CodeBuild::Project
+#    Properties:
+#      Description: "Code build for deploying backend serverless application"
+#      ServiceRole: !GetAtt deploySlsCodeBuildRole.Arn
+#      Artifacts:
+#        Type: CODEPIPELINE
+#        OverrideArtifactName: true
+#      Environment:
+#        Type: LINUX_CONTAINER
+#        ComputeType: BUILD_GENERAL1_SMALL
+#        Image: nikolaik/python-nodejs:python3.9-nodejs16
+#        PrivilegedMode: false
+#      Name: "sls-deploy-backend"
+#      Source:
+#        BuildSpec: infrastructure/buildspec.yml
+#        GitCloneDepth: 1
+#        Type: CODEPIPELINE
+#      LogsConfig:
+#        CloudWatchLogs:
+#          Status: ENABLED
+#      TimeoutInMinutes: 5
+
 #  slsBackendPipeline:
 #    Type: AWS::CodePipeline::Pipeline
 #    Properties:
@@ -110,48 +150,3 @@ Resources:
 #      TargetPipelineVersion: !GetAtt subzeroBackendPipeline.Version
 #      RegisterWithThirdParty: 'true'
 #    DependsOn: subzeroBackendPipeline
-#
-#  deploySlsCodeBuild:
-#    Type: AWS::CodeBuild::Project
-#    Properties:
-#      Description: "Code build for deploying backend serverless application"
-#      ServiceRole: !GetAtt deploySlsCodeBuildRole.Arn
-#      Artifacts:
-#        Type: CODEPIPELINE
-#        OverrideArtifactName: true
-#      Environment:
-#        Type: LINUX_CONTAINER
-#        ComputeType: BUILD_GENERAL1_SMALL
-#        Image: nikolaik/python-nodejs:python3.9-nodejs16
-#        PrivilegedMode: false
-#      Name: "sls-deploy-backend"
-#      Source:
-#        BuildSpec: infrastructure/buildspec.yml
-#        GitCloneDepth: 1
-#        Type: CODEPIPELINE
-#      LogsConfig:
-#        CloudWatchLogs:
-#          Status: ENABLED
-#      TimeoutInMinutes: 5
-#
-#  deploySlsCodeBuildRole:
-#    Type: AWS::IAM::Role
-#    Properties:
-#      AssumeRolePolicyDocument:
-#        Statement:
-#        - Action: ['sts:AssumeRole']
-#          Effect: Allow
-#          Principal:
-#            Service:
-#            - codebuild.amazonaws.com
-#        Version: '2012-10-17'
-#      Path: /
-#      Policies:
-#      - PolicyName: "codeBuildAccess"
-#        PolicyDocument:
-#          Version: '2012-10-17'
-#          Statement:
-#          - Action:
-#            - '*'
-#            Effect: Allow
-#            Resource: '*'
