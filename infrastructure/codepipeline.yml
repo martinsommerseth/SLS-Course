@@ -24,188 +24,6 @@ Resources:
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
 
-  backendPipelinePolicy:
-    Type: AWS::IAM::ManagedPolicy
-    Properties:
-      ManagedPolicyName: "backend-pipeline-policy"
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Action:
-              - 'logs:*'
-            Effect: Allow
-            Resource: "*"
-          - Action:
-              - 's3:*'
-            Effect: Allow
-            Resource:
-              - '*'
-          - Action:
-              - 'cloudformation:DescribeStacks'
-              - 'cloudformation:CreateStack'
-              - 'cloudformation:CreateChangeSet'
-              - 'cloudformation:UpdateStack'
-            Effect: Allow
-            Resource: "*"
-          - Action:
-              - 'codebuild:StartBuild'
-              - 'codebuild:BatchGetBuilds'
-              - 'codebuild:UpdateProject'
-              - 'codebuild:CreateProject'
-              - 'codebuild:DeleteProject'
-              - 'codebuild:CreateWebhook'
-              - 'codebuild:UpdateWebhook'
-            Effect: Allow
-            Resource:
-              - '*'
-          - Action:
-              - 'iam:CreateRole'
-              - 'iam:AttachRolePolicy'
-              - 'iam:DetachRolePolicy'
-              - 'iam:GetRole'
-              - 'iam:GetRolePolicy'
-              - 'iam:DeleteRole'
-              - 'iam:DeleteRolePolicy'
-              - 'iam:PutRolePolicy'
-              - 'iam:UpdateAssumeRolePolicy'
-              - 'iam:TagRole'
-              - 'iam:ListRoleTags'
-            Effect: Allow
-            Resource:
-              - "*"
-          - Action:
-              - 'iam:PassRole'
-            Effect: Allow
-            Resource: "*"
-          - Action:
-              - 'codepipeline:*'
-            Effect: Allow
-            Resource: "*"
-          - Action:
-              - 'events:*'
-            Effect: Allow
-            Resource: "*"
-          - Action:
-              - 'lambda:GetFunction'
-              - 'lambda:GetFunctionConfiguration'
-              - 'lambda:DeleteFunction'
-              - 'lambda:CreateFunction'
-              - 'lambda:InvokeFunction'
-              - 'lambda:UpdateFunctionConfiguration'
-              - 'lambda:UpdateFunctionCode'
-              - 'lambda:ListTags'
-              - 'lambda:TagResource'
-              - 'lambda:UntagResource'
-              - 'lambda:AddPermission'
-              - 'lambda:RemovePermission'
-            Effect: Allow
-            Resource:
-              - "*"
-          - Action:
-              - 'cloudfront:GetDistribution'
-              - 'cloudfront:GetCachePolicy'
-              - 'cloudfront:GetCloudFrontOriginAccessIdentity'
-              - 'cloudfront:CreateDistribution'
-              - 'cloudfront:CreateCachePolicy'
-              - 'cloudfront:CreateCloudFrontOriginAccessIdentity'
-              - 'cloudfront:UpdateDistribution'
-            Effect: Allow
-            Resource: "*"
-          - Action:
-              - 'secretsmanager:GetSecretValue'
-            Effect: Allow
-            Resource: "*"
-          - Action:
-              - 'budget:*'
-              - 'budgets:*'
-            Effect: Allow
-            Resource: "*"
-          - Action:
-              - 'apigateway:POST'
-              - 'apigateway:GET'
-              - 'apigateway:PATCH'
-            Effect: Allow
-            Resource: "*"
-          - Action:
-              - 'route53:GetHostedZone'
-              - 'route53:ChangeResourceRecordSets'
-              - 'route53:ListResourceRecordSets'
-              - 'route53:GetChange'
-            Effect: Allow
-            Resource: "*"
-          - Action:
-              - 'ssm:GetParameters'
-            Effect: Allow
-            Resource: "*"
-          - Action:
-              - 'codestar-notifications:CreateNotificationRule'
-            Effect: Allow
-            Resource: "*"
-          - Action:
-              - 'sts:AssumeRole'
-            Effect: Allow
-            Resource:
-              - '*'
-          - Action:
-              - 'cloudfront:*'
-            Effect: Allow
-            Resource:
-              - '*'
-          - Effect: Allow
-            Action:
-              - "sns:CreateTopic"
-              - "sns:DeleteTopic"
-              - "sns:GetTopicAttributes"
-              - "sns:SetTopicAttributes"
-              - "sns:Subscribe"
-              - "sns:ListTopics"
-              - "sns:DeleteTopic"
-              - "sns:Publish"
-              - "sns:ListSubscriptionsByTopic"
-              - "sns:*TopicAttributes"
-              - "sns:*SubscriptionAttributes"
-            Resource: "*"
-          - Effect: Allow
-            Action: "guardduty:CreateDetector"
-            Resource: "*"
-          - Effect: Allow
-            Action:
-              - "iam:CreateRole"
-              - "iam:AttachRolePolicy"
-              - "iam:PutRolePolicy"
-              - "iam:DetachRolePolicy"
-              - "iam:GetPolicy"
-              - "iam:GetRolePolicy"
-              - "iam:DeleteRole"
-              - "iam:DeletePolicy"
-              - "iam:DeleteRolePolicy"
-              - "iam:PassRole"
-              - "iam:CreatePolicy"
-              - "iam:CreatePolicyVersion"
-              - "iam:ListPolicyVersion"
-              - "iam:ListPolicyVersions"
-              - "iam:DeletePolicyVersion"
-            Resource:
-              - "*"
-          - Effect: Allow
-            Action:
-              - "cloudtrail:StartLogging"
-              - "cloudtrail:UpdateTrail"
-              - "cloudtrail:DeleteTrail"
-              - "cloudtrail:CreateTrail"
-              - "cloudtrail:DeleteTrail"
-              - "cloudtrail:PutEventSelectors"
-            Resource: "*"
-          - Effect: Allow
-            Action:
-              - "kms:CreateKey"
-              - "cloudtrail:DescribeTrails"
-            Resource: "*"
-          - Effect: Allow
-            Action:
-              - "dynamodb:*"
-            Resource: "*"
-
   backendPipelineRole:
     Type: AWS::IAM::Role
     Properties:
@@ -217,11 +35,17 @@ Resources:
             Principal:
               Service:
                 - codepipeline.amazonaws.com
-                - cloudformation.amazonaws.com
         Version: '2012-10-17'
       Path: /
-      ManagedPolicyArns:
-        - !Ref backendPipelinePolicy
+      Policies:
+        - PolicyName: "backendPipelinePolicy"
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Action:
+              - '*'
+              Effect: Allow
+              Resource: '*'
 
   deploySlsCodeBuildRole:
     Type: AWS::IAM::Role
@@ -285,9 +109,9 @@ Resources:
             Configuration:
               Owner: martinsommerseth
               Repo: SLS-Course
-              Branch: master
+              Branch: main
               PollForSourceChanges: false
-              OAuthToken: '{{resolve:secretsmanager:GITHUB_ACCESS_TOKEN:SecretString:token}}'
+              OAuthToken: '{{resolve:secretsmanager:GITHUB_ACCESS_TOKEN:SecretString:GITHUB_ACCESS_TOKEN}}'
             OutputArtifacts:
               - Name: SourceArtifact
             Region: !Sub ${Region}
