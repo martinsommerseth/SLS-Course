@@ -140,7 +140,7 @@ Resources:
         SecretToken: '{{resolve:secretsmanager:GITHUB_ACCESS_TOKEN:SecretString:GITHUB_ACCESS_TOKEN}}'
       Filters:
       - JsonPath: "$.ref"
-        MatchEquals: 'refs/heads/master'
+        MatchEquals: 'refs/heads/main'
       Authentication: GITHUB_HMAC
       TargetPipeline: !Ref slsBackendPipeline
       TargetAction: SLS-Course
