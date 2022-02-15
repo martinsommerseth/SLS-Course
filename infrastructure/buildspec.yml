@@ -6,8 +6,6 @@ phases:
       - npm install
       - npm install serverless
       - npx serverless plugin install -n serverless-python-requirements
-      - npx serverless plugin install -n serverless-iam-roles-per-function
-      - npx serverless plugin install -n serverless-api-gateway-caching
   build:
     commands:
       - npx serverless deploy
