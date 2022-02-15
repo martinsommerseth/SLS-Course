@@ -132,19 +132,19 @@ Resources:
       ArtifactStore:
         Type: S3
         Location: !Ref artifactBucket
-#
-#  sourceWebHookBackend:
-#    Type: 'AWS::CodePipeline::Webhook'
-#    Properties:
-#      AuthenticationConfiguration:
-#        SecretToken: '{{resolve:secretsmanager:GITHUB_WEBHOOK_TOKEN_SOLVER_SERVICE:SecretString:token}}'
-#      Filters:
-#      - JsonPath: "$.ref"
-#        MatchEquals: 'refs/heads/master'
-#      Authentication: GITHUB_HMAC
-#      TargetPipeline: !Ref subzeroBackendPipeline
-#      TargetAction: Subzero-Backend
-#      Name: "backendPipelineWebhook"
-#      TargetPipelineVersion: !GetAtt subzeroBackendPipeline.Version
-#      RegisterWithThirdParty: 'true'
-#    DependsOn: subzeroBackendPipeline
+
+  sourceWebHookBackend:
+    Type: 'AWS::CodePipeline::Webhook'
+    Properties:
+      AuthenticationConfiguration:
+        SecretToken: '{{resolve:secretsmanager:GITHUB_ACCESS_TOKEN:SecretString:GITHUB_ACCESS_TOKEN}}'
+      Filters:
+      - JsonPath: "$.ref"
+        MatchEquals: 'refs/heads/master'
+      Authentication: GITHUB_HMAC
+      TargetPipeline: !Ref slsBackendPipeline
+      TargetAction: SLS-Course
+      Name: "backendPipelineWebhook"
+      TargetPipelineVersion: !GetAtt slsBackendPipeline.Version
+      RegisterWithThirdParty: 'true'
+    DependsOn: slsBackendPipeline
