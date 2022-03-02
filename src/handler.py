@@ -3,7 +3,7 @@ from ortools.linear_solver import pywraplp
 import json
 
 
-def solver(event, context):
+def hello(event, context):
     print(event)
     return {
         "statusCode": 200,
