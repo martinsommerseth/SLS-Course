@@ -21,6 +21,14 @@ functions:
     events:
       - http:
           path: /hello
+          method: get
+          cors: true
+
+  clculator:
+    handler: src/handler.calculate
+    events:
+      - http:
+          path: /calculate
           method: put
           cors: true
 
