@@ -22,7 +22,7 @@ functions:
       - http:
           path: /hello
           method: get
-          cors: true
+          private: true
 
   clculator:
     handler: src/handler.calculate
@@ -30,7 +30,7 @@ functions:
       - http:
           path: /calculate
           method: put
-          cors: true
+          private: true
 
 plugins:
   - serverless-python-requirements
